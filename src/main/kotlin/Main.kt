@@ -1,17 +1,24 @@
 package com.itheamc
 
 fun main() {
-    val myAgent = MyAgent()
+    val agent = MyAgent(
+        modelProvider = AgentModelProvider.GOOGLE_AI
+    )
 
     while (true) {
-        print("You: ")  // Prompt for user input
-        val userInput = readlnOrNull() ?: break  // Read user input and break if null (EOF)
+        // Prompt for user input
+        print("You: ")
 
-        if (userInput.equals("exit", ignoreCase = true)) {
+        // Read user input and break if null
+        val prompt = readlnOrNull() ?: break
+
+        // Check if user wants to exit
+        if (prompt.equals("exit", ignoreCase = true)) {
             println("Chat ended.")
             break
         }
 
-        myAgent.chat(userInput)  // Call the chat function
+        // Call the chat function
+        agent.chat(prompt)
     }
 }

@@ -6,27 +6,43 @@ import dev.langchain4j.data.message.ChatMessage
 import dev.langchain4j.data.message.SystemMessage.systemMessage
 import dev.langchain4j.data.message.ToolExecutionResultMessage
 import dev.langchain4j.data.message.UserMessage.userMessage
+import dev.langchain4j.model.chat.ChatLanguageModel
 import dev.langchain4j.model.chat.request.ChatRequest
 import dev.langchain4j.model.chat.request.ChatRequestParameters
 import dev.langchain4j.model.chat.response.ChatResponse
+import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel
 import dev.langchain4j.model.openai.OpenAiChatModel
 import dev.langchain4j.service.tool.DefaultToolExecutor
 import java.util.*
+
+enum class AgentModelProvider {
+    OPENAI,
+    GOOGLE_AI
+}
 
 /**
  * The main class for the LangChain Agent.
  * It provides a chat interface with the user and handles the conversation flow.
  */
-class MyAgent {
+class MyAgent(
+    private val modelProvider: AgentModelProvider = AgentModelProvider.OPENAI
+) {
 
     /**
      * Lazily initializes the OpenAI chat model with the specified API key and model name.
      */
-    private val model by lazy {
-        OpenAiChatModel.builder()
-            .apiKey(System.getenv("OPENAI_API_KEY"))
-            .modelName("gpt-4o-mini")
-            .build()
+    private val model: ChatLanguageModel by lazy {
+        if (modelProvider == AgentModelProvider.OPENAI) {
+            OpenAiChatModel.builder()
+                .apiKey(System.getenv("OPENAI_API_KEY"))
+                .modelName("gpt-4o-mini")
+                .build()
+        } else {
+            GoogleAiGeminiChatModel.builder()
+                .apiKey(System.getenv("GEMINI_API_KEY"))
+                .modelName("gemini-2.0-flash")
+                .build()
+        }
     }
 
 
@@ -73,6 +89,11 @@ class MyAgent {
             val chatResponse = sendChatRequest(chatMessages)
             val aiMessage = chatResponse.aiMessage()
             chatMessages.add(aiMessage)
+
+            if (aiMessage.toolExecutionRequests().isNullOrEmpty()) {
+                println(aiMessage.text())
+                return
+            }
 
             // Step 3: Handle Tool Execution Requests
             processToolRequests(aiMessage.toolExecutionRequests())
