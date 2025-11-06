@@ -73,4 +73,51 @@ class MyAgentTools {
             return response.body?.string() ?: ""
         }
     }
+
+    @Tool("Return the products")
+    fun products(): String {
+        val client = OkHttpClient()
+        val request: Request = Request.Builder()
+            .url("https://fakestoreapi.com/products/")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            return response.body?.string() ?: ""
+        }
+    }
+
+    @Tool("Send the email")
+    fun sendEmail(
+        @P("The email address") email: String,
+        @P("The subject of the email") subject: String,
+        @P("The body of the email") body: String,
+    ): String {
+        return """
+            Sending email to $email
+            Subject: $subject,
+            Body: $body
+        """.trimIndent()
+    }
+
+    @Tool("Return the maximum number from the given numbers")
+    fun max(
+        @P("The list of numbers") numbers: List<String> = emptyList(),
+    ): String {
+        return numbers.mapNotNull {it.toDoubleOrNull() ?: it.toIntOrNull()?.toDouble()}.maxOrNull()?.toString() ?: "N/A"
+    }
+
+    @Tool("Return the minimum number from the given numbers")
+    fun min(
+        @P("The list of numbers") numbers: List<String> = emptyList(),
+    ): String {
+        return numbers.mapNotNull {it.toDoubleOrNull() ?: it.toIntOrNull()?.toDouble()}.minOrNull()?.toString() ?: "N/A"
+    }
+
+    @Tool("Return the average number from the given numbers")
+    fun average(
+        @P("The list of numbers") numbers: List<String> = emptyList(),
+    ): String {
+        val lst = numbers.mapNotNull {it.toDoubleOrNull() ?: it.toIntOrNull()?.toDouble()}
+        return if (lst.isNotEmpty()) (lst.reduce { acc, n -> acc + n } / numbers.size).toString() else "N/A"
+    }
 }
