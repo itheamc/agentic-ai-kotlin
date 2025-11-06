@@ -74,11 +74,14 @@ class MyAgentTools {
         }
     }
 
-    @Tool("Return the products")
-    fun products(): String {
+    @Tool("Return the products with given query if query is provided else return all products without query")
+    fun products(
+        @P("The query of the products which should be returned") query: String? = null
+    ): String {
         val client = OkHttpClient()
+        val url = if (!query.isNullOrEmpty()) "https://dummyjson.com/products/search?q=$query" else "https://dummyjson.com/products"
         val request: Request = Request.Builder()
-            .url("https://fakestoreapi.com/products/")
+            .url(url)
             .build()
 
         client.newCall(request).execute().use { response ->
