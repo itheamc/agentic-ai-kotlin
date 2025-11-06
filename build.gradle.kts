@@ -10,12 +10,12 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.langchain4j:langchain4j:1.0.0-beta2")
+    implementation("dev.langchain4j:langchain4j:1.8.0")
     // For OpenAi Model
-    implementation("dev.langchain4j:langchain4j-open-ai:1.0.0-beta2")
+    implementation("dev.langchain4j:langchain4j-open-ai:1.8.0")
 
     // For Google AI Model
-    implementation("dev.langchain4j:langchain4j-google-ai-gemini:1.0.0-beta2")
+    implementation("dev.langchain4j:langchain4j-google-ai-gemini:1.8.0")
 
     // OkHttp for HTTP Client
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

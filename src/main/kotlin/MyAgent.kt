@@ -6,7 +6,7 @@ import dev.langchain4j.data.message.ChatMessage
 import dev.langchain4j.data.message.SystemMessage.systemMessage
 import dev.langchain4j.data.message.ToolExecutionResultMessage
 import dev.langchain4j.data.message.UserMessage.userMessage
-import dev.langchain4j.model.chat.ChatLanguageModel
+import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.chat.request.ChatRequest
 import dev.langchain4j.model.chat.request.ChatRequestParameters
 import dev.langchain4j.model.chat.response.ChatResponse
@@ -31,7 +31,7 @@ class MyAgent(
     /**
      * Lazily initializes the OpenAI chat model with the specified API key and model name.
      */
-    private val model: ChatLanguageModel by lazy {
+    private val model: ChatModel by lazy {
         if (modelProvider == AgentModelProvider.OPENAI) {
             OpenAiChatModel.builder()
                 .apiKey(System.getenv("OPENAI_API_KEY"))

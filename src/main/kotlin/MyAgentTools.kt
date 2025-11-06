@@ -22,7 +22,7 @@ class MyAgentTools {
         }
     }
 
-    @Tool("Return the todo for a given id")
+    @Tool("Return the todo with a given id")
     fun todoById(
         @P("The id of the todo which data should be returned") id: Int?
     ): String {
@@ -41,6 +41,32 @@ class MyAgentTools {
         val client = OkHttpClient()
         val request: Request = Request.Builder()
             .url("https://jsonplaceholder.typicode.com/todos")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            return response.body?.string() ?: ""
+        }
+    }
+
+    @Tool("Return the user with a given id")
+    fun userById(
+        @P("The id of the user which data should be returned") id: Int?
+    ): String {
+        val client = OkHttpClient()
+        val request: Request = Request.Builder()
+            .url("https://jsonplaceholder.typicode.com/users/${id}")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            return response.body?.string() ?: ""
+        }
+    }
+
+    @Tool("Return the users")
+    fun users(): String {
+        val client = OkHttpClient()
+        val request: Request = Request.Builder()
+            .url("https://jsonplaceholder.typicode.com/users")
             .build()
 
         client.newCall(request).execute().use { response ->
